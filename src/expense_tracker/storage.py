@@ -24,3 +24,8 @@ def parse_amount(raw_value: str) -> float | None:
         return float(raw_value)
     except ValueError:
         return None
+
+
+def filter_by_category(transactions: list[dict], category: str) -> list[dict]:
+    """Return only the transactions matching the given category (case-insensitive)."""
+    return [t for t in transactions if t["category"].lower() == category.lower()]

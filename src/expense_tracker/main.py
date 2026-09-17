@@ -1,5 +1,6 @@
 from expense_tracker.storage import (
     add_transaction,
+    filter_by_category,
     get_total,
     get_totals_by_category,
     parse_amount,
@@ -46,6 +47,16 @@ def print_summary(transactions: list[dict]) -> None:
     print("By category:")
     for category, amount in get_totals_by_category(transactions).items():
         print(f"  {category}: {amount}")
+
+    lookup = input("\nWant to see transactions for a specific category? (enter category or press Enter to skip): ")
+    if lookup:
+        matches = filter_by_category(transactions, lookup)
+        if matches:
+            print(f"\nTransactions in '{lookup}':")
+            for t in matches:
+                print(f"  {t['amount']} - {t['category']}")
+        else:
+            print(f"No transactions found for '{lookup}'.")
 
 
 if __name__ == "__main__":
