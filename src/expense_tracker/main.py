@@ -25,7 +25,12 @@ def main() -> None:
             continue
 
         category = input("Enter category (e.g. food, rent, fun): ")
-        transaction = add_transaction(transactions, amount, category)
+
+        try:
+            transaction = add_transaction(transactions, amount, category)
+        except ValueError as e:
+            print(f"Invalid entry: {e}")
+            continue
 
         kind = "expense" if transaction.is_expense else "income"
         print(f"Recorded {kind}: {transaction.amount} in {transaction.category}")
