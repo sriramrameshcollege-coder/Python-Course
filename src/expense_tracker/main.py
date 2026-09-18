@@ -1,3 +1,4 @@
+from expense_tracker.models import Expense
 from expense_tracker.storage import (
     add_transaction,
     filter_by_category,
@@ -10,7 +11,7 @@ from expense_tracker.storage import (
 def main() -> None:
     print("=== Expense Tracker ===")
 
-    transactions: list[dict] = []
+    transactions: list[Expense] = []
 
     while True:
         raw_amount = input("Enter amount (or 'q' to quit): ")
@@ -24,17 +25,15 @@ def main() -> None:
             continue
 
         category = input("Enter category (e.g. food, rent, fun): ")
-        add_transaction(transactions, amount, category)
+        transaction = add_transaction(transactions, amount, category)
 
-        if amount < 0:
-            print(f"Recorded expense: {amount} in {category}")
-        else:
-            print(f"Recorded income: {amount} in {category}")
+        kind = "expense" if transaction.is_expense else "income"
+        print(f"Recorded {kind}: {transaction.amount} in {transaction.category}")
 
     print_summary(transactions)
 
 
-def print_summary(transactions: list[dict]) -> None:
+def print_summary(transactions: list[Expense]) -> None:
     print("\n=== Summary ===")
 
     if not transactions:
@@ -54,7 +53,7 @@ def print_summary(transactions: list[dict]) -> None:
         if matches:
             print(f"\nTransactions in '{lookup}':")
             for t in matches:
-                print(f"  {t['amount']} - {t['category']}")
+                print(f"  {t}")
         else:
             print(f"No transactions found for '{lookup}'.")
 
