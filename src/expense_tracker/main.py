@@ -14,12 +14,12 @@ def main() -> None:
     transactions: list[Transaction] = []
 
     while True:
-        kind = input("Income or expense? (i/e, or 'q' to quit): ").strip().lower()
+        kind = input("Income, expense, or recurring? (i/e/r, or 'q' to quit): ").strip().lower()
 
         if kind == "q":
             break
-        if kind not in ("i", "e"):
-            print("Please enter 'i', 'e', or 'q'.")
+        if kind not in ("i", "e", "r"):
+            print("Please enter 'i', 'e', 'r', or 'q'.")
             continue
 
         raw_amount = input("Enter amount (positive number): ")
@@ -30,10 +30,16 @@ def main() -> None:
 
         category = input("Enter category (e.g. food, rent, fun): ")
 
+        frequency = None
+        if kind == "r":
+            direction = input("Is this recurring income or expense? (i/e): ").strip().lower()
+            frequency = input("Frequency (e.g. monthly, weekly): ")
+            resolved_kind = "recurring_income" if direction == "i" else "recurring_expense"
+        else:
+            resolved_kind = "income" if kind == "i" else "expense"
+
         try:
-            transaction = add_transaction(
-                transactions, amount, category, "income" if kind == "i" else "expense"
-            )
+            transaction = add_transaction(transactions, amount, category, resolved_kind, frequency)
         except ValueError as e:
             print(f"Invalid entry: {e}")
             continue
@@ -57,8 +63,11 @@ def print_summary(transactions: list[Transaction]) -> None:
     for category, amount in get_totals_by_category(transactions).items():
         print(f"  {category}: {amount}")
 
-    lookup = input("\nWant to see transactions for a specific category? (enter category or press Enter to skip): ")
-    if lookup:
+    while True:
+        lookup = input("\nWant to see transactions for a specific category? (enter category or press Enter to skip): ")
+        if not lookup:
+            break
+
         matches = filter_by_category(transactions, lookup)
         if matches:
             print(f"\nTransactions in '{lookup}':")

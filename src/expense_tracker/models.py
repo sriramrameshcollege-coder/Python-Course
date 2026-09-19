@@ -33,3 +33,25 @@ class Expense(Transaction):
     @property
     def signed_amount(self) -> float:
         return -self.amount
+
+
+class Recurring:
+    """Mixin that adds a frequency label to any transaction. Not used standalone."""
+
+    def __init__(self, *args, frequency: str, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.frequency = frequency.strip().lower()
+
+    def __repr__(self) -> str:
+        base = super().__repr__()
+        return f"{base} [recurring: {self.frequency}]"
+
+
+class RecurringIncome(Recurring, Income):
+    """Income that repeats on a schedule, e.g. salary."""
+    pass
+
+
+class RecurringExpense(Recurring, Expense):
+    """An expense that repeats on a schedule, e.g. rent or a subscription."""
+    pass

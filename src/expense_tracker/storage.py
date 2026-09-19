@@ -1,16 +1,24 @@
-from expense_tracker.models import Expense, Income, Transaction
+from expense_tracker.models import Expense, Income, RecurringExpense, RecurringIncome, Transaction
 
 
 def add_transaction(
-    transactions: list[Transaction], amount: float, category: str, kind: str
+    transactions: list[Transaction],
+    amount: float,
+    category: str,
+    kind: str,
+    frequency: str | None = None,
 ) -> Transaction:
-    """Create an Income or Expense (based on `kind`) and append it."""
+    """Create a transaction of the given kind and append it."""
     if kind == "income":
         transaction = Income(amount, category)
     elif kind == "expense":
         transaction = Expense(amount, category)
+    elif kind == "recurring_income":
+        transaction = RecurringIncome(amount, category, frequency=frequency or "monthly")
+    elif kind == "recurring_expense":
+        transaction = RecurringExpense(amount, category, frequency=frequency or "monthly")
     else:
-        raise ValueError("kind must be 'income' or 'expense'")
+        raise ValueError("Invalid transaction kind.")
 
     transactions.append(transaction)
     return transaction
