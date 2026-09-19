@@ -1,4 +1,4 @@
-from expense_tracker.models import Expense
+from expense_tracker.models import Transaction
 from expense_tracker.storage import (
     add_transaction,
     filter_by_category,
@@ -11,14 +11,18 @@ from expense_tracker.storage import (
 def main() -> None:
     print("=== Expense Tracker ===")
 
-    transactions: list[Expense] = []
+    transactions: list[Transaction] = []
 
     while True:
-        raw_amount = input("Enter amount (or 'q' to quit): ")
+        kind = input("Income or expense? (i/e, or 'q' to quit): ").strip().lower()
 
-        if raw_amount.lower() == "q":
+        if kind == "q":
             break
+        if kind not in ("i", "e"):
+            print("Please enter 'i', 'e', or 'q'.")
+            continue
 
+        raw_amount = input("Enter amount (positive number): ")
         amount = parse_amount(raw_amount)
         if amount is None:
             print("That's not a valid number, try again.")
@@ -27,18 +31,19 @@ def main() -> None:
         category = input("Enter category (e.g. food, rent, fun): ")
 
         try:
-            transaction = add_transaction(transactions, amount, category)
+            transaction = add_transaction(
+                transactions, amount, category, "income" if kind == "i" else "expense"
+            )
         except ValueError as e:
             print(f"Invalid entry: {e}")
             continue
 
-        kind = "expense" if transaction.is_expense else "income"
-        print(f"Recorded {kind}: {transaction.amount} in {transaction.category}")
+        print(f"Recorded {transaction}")
 
     print_summary(transactions)
 
 
-def print_summary(transactions: list[Expense]) -> None:
+def print_summary(transactions: list[Transaction]) -> None:
     print("\n=== Summary ===")
 
     if not transactions:
