@@ -7,7 +7,9 @@ authors = [
     { name = "sriramrameshcollege-coder", email = "sriramramesh.college@gmail.com" }
 ]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "numpy>=2.2.6",
+]
 
 [project.scripts]
 expense-tracker = "expense_tracker:main"
