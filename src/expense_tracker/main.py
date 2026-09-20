@@ -1,5 +1,5 @@
 from expense_tracker.models import Transaction
-from expense_tracker.analysis import get_running_balance, get_stats
+from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats
 from expense_tracker.storage import (
     add_transaction,
     filter_by_category,
@@ -66,13 +66,18 @@ def print_summary(transactions: list[Transaction]) -> None:
 
     stats = get_stats(transactions)
     print("\n=== Numpy Stats ===")
-    print(f"Average transaction: {stats['mean']:.2f}")
-    print(f"Std deviation: {stats['std']:.2f}")
+    print(f"Average income: {stats['income_mean']:.2f} (std: {stats['income_std']:.2f})")
+    print(f"Average expense: {stats['expense_mean']:.2f} (std: {stats['expense_std']:.2f})")
     print(f"Biggest income: {stats['biggest_income']:.2f}")
     print(f"Biggest expense: {stats['biggest_expense']:.2f}")
 
     running = get_running_balance(transactions)
-    print(f"Running balance over time: {running.tolist()}")    
+    print(f"Running balance over time: {running.tolist()}")
+
+    biggest = get_biggest_expense_category(transactions)
+    if biggest:
+        category, amount = biggest
+        print(f"Category with biggest expense: {category} ({amount:.2f})")    
 
     while True:
         lookup = input("\nWant to see transactions for a specific category? (enter category or press Enter to skip): ")
