@@ -1,5 +1,5 @@
 from expense_tracker.models import Transaction
-from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats
+from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats, get_category_summary, get_monthly_summary, load_as_dataframe
 from expense_tracker.storage import (
     add_transaction,
     filter_by_category,
@@ -94,6 +94,15 @@ def print_summary(transactions: list[Transaction]) -> None:
                 print(f"  {t}")
         else:
             print(f"No transactions found for '{lookup}'.")
+
+    print("\n=== Pandas Analysis ===")
+    df = load_as_dataframe()
+    if not df.empty:
+        print("\nCategory totals (sorted):")
+        print(get_category_summary(df).to_string(index=False))
+
+        print("\nTransaction type counts:")
+        print(get_monthly_summary(df).to_string())
 
 
 if __name__ == "__main__":

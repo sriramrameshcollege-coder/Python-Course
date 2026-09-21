@@ -1,5 +1,6 @@
 import numpy as np
-
+import pandas as pd
+from pathlib import Path
 from expense_tracker.models import Transaction
 
 
@@ -52,3 +53,32 @@ def get_biggest_expense_category(transactions: list[Transaction]) -> tuple[str, 
 
     idx = np.argmin(amounts)  # most negative = biggest expense
     return str(categories[idx]), float(amounts[idx])
+
+def load_as_dataframe(path: Path = Path("data/transactions.csv")) -> pd.DataFrame:
+    """Load the transactions CSV into a pandas DataFrame."""
+    if not path.exists():
+        return pd.DataFrame(columns=["type", "amount", "category", "frequency"])
+
+    df = pd.read_csv(path)
+
+    # Recreate signed_amount: negative for Expense/RecurringExpense, positive otherwise
+    df["signed_amount"] = df.apply(
+        lambda row: -row["amount"] if "Expense" in row["type"] else row["amount"],
+        axis=1,
+    )
+    return df
+
+
+def get_category_summary(df: pd.DataFrame) -> pd.DataFrame:
+    """Return total signed amount per category, sorted descending."""
+    return (
+        df.groupby("category")["signed_amount"]
+        .sum()
+        .sort_values(ascending=False)
+        .reset_index()
+    )
+
+
+def get_monthly_summary(df: pd.DataFrame) -> pd.Series:
+    """Return count of transactions per type (Income/Expense/Recurring*)."""
+    return df["type"].value_counts()
