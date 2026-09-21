@@ -5,14 +5,16 @@ from expense_tracker.storage import (
     filter_by_category,
     get_total,
     get_totals_by_category,
+    load_transactions,
     parse_amount,
+    save_transactions,
 )
-
 
 def main() -> None:
     print("=== Expense Tracker ===")
 
-    transactions: list[Transaction] = []
+    transactions: list[Transaction] = load_transactions()
+    print(f"Loaded {len(transactions)} existing transactions.")
 
     while True:
         kind = input("Income, expense, or recurring? (i/e/r, or 'q' to quit): ").strip().lower()
@@ -47,6 +49,7 @@ def main() -> None:
 
         print(f"Recorded {transaction}")
 
+    save_transactions(transactions)
     print_summary(transactions)
 
 
