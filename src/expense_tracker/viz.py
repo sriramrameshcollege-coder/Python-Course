@@ -43,3 +43,19 @@ def show_and_maybe_save(filename: str) -> None:
         print(f"Saved to output/{filename}")
 
     plt.close()
+
+def build_income_vs_expense_chart(df: pd.DataFrame) -> None:
+    """Build (but don't show/save) a pie chart comparing total income vs total expense."""
+    total_income = df.loc[df["signed_amount"] > 0, "signed_amount"].sum()
+    total_expense = -df.loc[df["signed_amount"] < 0, "signed_amount"].sum()
+
+    plt.figure(figsize=(6, 6))
+    plt.pie(
+        [total_income, total_expense],
+        labels=["Income", "Expense"],
+        colors=["tab:green", "tab:red"],
+        autopct="%1.1f%%",
+        startangle=90,
+    )
+    plt.title("Income vs Expense")
+    plt.tight_layout()

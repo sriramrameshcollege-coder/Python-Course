@@ -1,5 +1,10 @@
 from expense_tracker.models import Transaction
-from expense_tracker.viz import build_category_chart, build_running_balance_chart, show_and_maybe_save
+from expense_tracker.viz import (
+    build_category_chart,
+    build_income_vs_expense_chart,
+    build_running_balance_chart,
+    show_and_maybe_save,
+)
 from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats, get_category_summary, get_monthly_summary, load_as_dataframe
 from expense_tracker.storage import (
     add_transaction,
@@ -113,6 +118,9 @@ def print_summary(transactions: list[Transaction]) -> None:
 
             build_running_balance_chart(df)
             show_and_maybe_save("running_balance.png")
+
+            build_income_vs_expense_chart(df)
+            show_and_maybe_save("income_vs_expense.png")
 
 if __name__ == "__main__":
     main()
