@@ -1,4 +1,5 @@
 from expense_tracker.models import Transaction
+from expense_tracker.viz import build_category_chart, build_running_balance_chart, show_and_maybe_save
 from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats, get_category_summary, get_monthly_summary, load_as_dataframe
 from expense_tracker.storage import (
     add_transaction,
@@ -104,6 +105,14 @@ def print_summary(transactions: list[Transaction]) -> None:
         print("\nTransaction type counts:")
         print(get_monthly_summary(df).to_string())
 
+    if not df.empty:
+        show_charts = input("\nWant to view charts? (y/n): ").strip().lower()
+        if show_charts == "y":
+            build_category_chart(df)
+            show_and_maybe_save("category_totals.png")
+
+            build_running_balance_chart(df)
+            show_and_maybe_save("running_balance.png")
 
 if __name__ == "__main__":
     main()

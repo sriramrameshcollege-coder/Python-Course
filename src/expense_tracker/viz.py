@@ -1,0 +1,45 @@
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+OUTPUT_DIR = Path("output")
+
+
+def build_category_chart(df: pd.DataFrame) -> None:
+    """Build (but don't show/save) a bar chart of total signed amount per category."""
+    totals = df.groupby("category")["signed_amount"].sum().sort_values()
+    colors = ["tab:red" if v < 0 else "tab:green" for v in totals.values]
+
+    plt.figure(figsize=(8, 5))
+    plt.barh(totals.index, totals.values, color=colors)
+    plt.axvline(0, color="black", linewidth=0.8)
+    plt.xlabel("Amount")
+    plt.title("Total by Category")
+    plt.tight_layout()
+
+
+def build_running_balance_chart(df: pd.DataFrame) -> None:
+    """Build (but don't show/save) a line chart of cumulative balance."""
+    running = df["signed_amount"].cumsum()
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(range(1, len(running) + 1), running.values, marker="o")
+    plt.axhline(0, color="black", linewidth=0.8)
+    plt.xlabel("Transaction number")
+    plt.ylabel("Balance")
+    plt.title("Running Balance Over Time")
+    plt.tight_layout()
+
+
+def show_and_maybe_save(filename: str) -> None:
+    """Display the current figure, then optionally save it based on user input."""
+    plt.show()
+
+    save = input(f"Save this chart to output/{filename}? (y/n): ").strip().lower()
+    if save == "y":
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        plt.savefig(OUTPUT_DIR / filename)
+        print(f"Saved to output/{filename}")
+
+    plt.close()
