@@ -1,7 +1,0 @@
-type,amount,category,frequency
-RecurringIncome,1000.0,salary,monthly
-RecurringExpense,400.0,rent,monthly
-Expense,50.0,food,
-Expense,20.0,fun,
-Expense,100.0,food,
-Expense,30.0,drinks,
