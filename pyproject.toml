@@ -1,7 +1,7 @@
 [project]
 name = "expense-tracker"
 version = "0.1.0"
-description = "Add your description here"
+description = "A simple command-line expense tracker built for an Intro to Python course, demonstrating and utilizing all concepts."
 readme = "README.md"
 authors = [
     { name = "sriramrameshcollege-coder", email = "sriramramesh.college@gmail.com" }
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-expense-tracker = "expense_tracker:main"
+expense-tracker = "expense_tracker.main:main"
 
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]
