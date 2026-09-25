@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from expense_tracker.models import Transaction
+from expense_tracker.storage import get_totals_by_category
 
 
 def get_amounts_array(transactions: list[Transaction]) -> np.ndarray:
@@ -40,7 +41,6 @@ def get_running_balance(transactions: list[Transaction]) -> np.ndarray:
 
 def get_biggest_expense_category(transactions: list[Transaction]) -> tuple[str, float] | None:
     """Return the (category, total) with the largest total expense amount."""
-    from expense_tracker.storage import get_totals_by_category
 
     totals = get_totals_by_category(transactions)
     expense_totals = {cat: amt for cat, amt in totals.items() if amt < 0}
