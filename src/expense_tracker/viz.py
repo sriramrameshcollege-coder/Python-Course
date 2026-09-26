@@ -45,6 +45,7 @@ def maybe_show(view_interactively: bool) -> None:
         plt.show()
     plt.close()
 
+
 def build_income_vs_expense_chart(df: pd.DataFrame) -> None:
     """Build (but don't show/save) a pie chart comparing total income vs total expense."""
     total_income = df.loc[df["signed_amount"] > 0, "signed_amount"].sum()

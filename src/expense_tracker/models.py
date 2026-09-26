@@ -49,9 +49,7 @@ class Recurring:
 
 class RecurringIncome(Recurring, Income):
     """Income that repeats on a schedule, e.g. salary."""
-    pass
 
 
 class RecurringExpense(Recurring, Expense):
     """An expense that repeats on a schedule, e.g. rent or a subscription."""
-    pass

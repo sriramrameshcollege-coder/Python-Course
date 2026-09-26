@@ -1,12 +1,12 @@
-from expense_tracker.models import Transaction
-from expense_tracker.viz import (
-    build_category_chart,
-    build_income_vs_expense_chart,
-    build_running_balance_chart,
-    save_chart,
-    maybe_show,
+from expense_tracker.analysis import (
+    get_biggest_expense_category,
+    get_category_summary,
+    get_monthly_summary,
+    get_running_balance,
+    get_stats,
+    load_as_dataframe,
 )
-from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats, get_category_summary, get_monthly_summary, load_as_dataframe
+from expense_tracker.models import Transaction
 from expense_tracker.storage import (
     add_transaction,
     filter_by_category,
@@ -16,6 +16,14 @@ from expense_tracker.storage import (
     parse_amount,
     save_transactions,
 )
+from expense_tracker.viz import (
+    build_category_chart,
+    build_income_vs_expense_chart,
+    build_running_balance_chart,
+    maybe_show,
+    save_chart,
+)
+
 
 def main() -> None:
     print("=== Expense Tracker ===")
@@ -24,7 +32,11 @@ def main() -> None:
     print(f"Loaded {len(transactions)} existing transactions.")
 
     while True:
-        kind = input("Income, expense, or recurring? (i/e/r, or 'q' to quit): ").strip().lower()
+        kind = (
+            input("Income, expense, or recurring? (i/e/r, or 'q' to quit): ")
+            .strip()
+            .lower()
+        )
 
         if kind == "q":
             break
@@ -42,14 +54,20 @@ def main() -> None:
 
         frequency = None
         if kind == "r":
-            direction = input("Is this recurring income or expense? (i/e): ").strip().lower()
+            direction = (
+                input("Is this recurring income or expense? (i/e): ").strip().lower()
+            )
             frequency = input("Frequency (e.g. monthly, weekly): ")
-            resolved_kind = "recurring_income" if direction == "i" else "recurring_expense"
+            resolved_kind = (
+                "recurring_income" if direction == "i" else "recurring_expense"
+            )
         else:
             resolved_kind = "income" if kind == "i" else "expense"
 
         try:
-            transaction = add_transaction(transactions, amount, category, resolved_kind, frequency)
+            transaction = add_transaction(
+                transactions, amount, category, resolved_kind, frequency
+            )
         except ValueError as e:
             print(f"Invalid entry: {e}")
             continue
@@ -76,8 +94,12 @@ def print_summary(transactions: list[Transaction]) -> None:
 
     stats = get_stats(transactions)
     print("\n=== Numpy Stats ===")
-    print(f"Average income: {stats['income_mean']:.2f} (std: {stats['income_std']:.2f})")
-    print(f"Average expense: {stats['expense_mean']:.2f} (std: {stats['expense_std']:.2f})")
+    print(
+        f"Average income: {stats['income_mean']:.2f} (std: {stats['income_std']:.2f})"
+    )
+    print(
+        f"Average expense: {stats['expense_mean']:.2f} (std: {stats['expense_std']:.2f})"
+    )
     print(f"Biggest income: {stats['biggest_income']:.2f}")
     print(f"Biggest expense: {stats['biggest_expense']:.2f}")
 
@@ -87,10 +109,12 @@ def print_summary(transactions: list[Transaction]) -> None:
     biggest = get_biggest_expense_category(transactions)
     if biggest:
         category, amount = biggest
-        print(f"Category with biggest expense: {category} ({amount:.2f})")    
+        print(f"Category with biggest expense: {category} ({amount:.2f})")
 
     while True:
-        lookup = input("\nWant to see transactions for a specific category? (enter category or press Enter to skip): ")
+        lookup = input(
+            "\nWant to see transactions for a specific category? (enter category or press Enter to skip): "
+        )
         if not lookup:
             break
 
@@ -112,7 +136,12 @@ def print_summary(transactions: list[Transaction]) -> None:
         print(get_monthly_summary(df).to_string())
 
         if not df.empty:
-            view_charts = input("\nWant to view charts on screen as well? (y/n): ").strip().lower() == "y"
+            view_charts = (
+                input("\nWant to view charts on screen as well? (y/n): ")
+                .strip()
+                .lower()
+                == "y"
+            )
 
             build_category_chart(df)
             save_chart("category_totals.png")
@@ -125,6 +154,7 @@ def print_summary(transactions: list[Transaction]) -> None:
             build_income_vs_expense_chart(df)
             save_chart("income_vs_expense.png")
             maybe_show(view_charts)
+
 
 if __name__ == "__main__":
     main()

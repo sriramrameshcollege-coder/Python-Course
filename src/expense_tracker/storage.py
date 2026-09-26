@@ -1,9 +1,16 @@
 import csv
 from pathlib import Path
 
-from expense_tracker.models import Expense, Income, RecurringExpense, RecurringIncome, Transaction
+from expense_tracker.models import (
+    Expense,
+    Income,
+    RecurringExpense,
+    RecurringIncome,
+    Transaction,
+)
 
 DATA_FILE = Path("data/transactions.csv")
+
 
 def save_transactions(transactions: list[Transaction], path: Path = DATA_FILE) -> None:
     """Write all transactions to a CSV file."""
@@ -39,11 +46,16 @@ def load_transactions(path: Path = DATA_FILE) -> list[Transaction]:
             elif type_name == "Expense":
                 transactions.append(Expense(amount, category))
             elif type_name == "RecurringIncome":
-                transactions.append(RecurringIncome(amount, category, frequency=frequency))
+                transactions.append(
+                    RecurringIncome(amount, category, frequency=frequency)
+                )
             elif type_name == "RecurringExpense":
-                transactions.append(RecurringExpense(amount, category, frequency=frequency))
+                transactions.append(
+                    RecurringExpense(amount, category, frequency=frequency)
+                )
 
     return transactions
+
 
 def add_transaction(
     transactions: list[Transaction],
@@ -58,9 +70,13 @@ def add_transaction(
     elif kind == "expense":
         transaction = Expense(amount, category)
     elif kind == "recurring_income":
-        transaction = RecurringIncome(amount, category, frequency=frequency or "monthly")
+        transaction = RecurringIncome(
+            amount, category, frequency=frequency or "monthly"
+        )
     elif kind == "recurring_expense":
-        transaction = RecurringExpense(amount, category, frequency=frequency or "monthly")
+        transaction = RecurringExpense(
+            amount, category, frequency=frequency or "monthly"
+        )
     else:
         raise ValueError("Invalid transaction kind.")
 
@@ -81,7 +97,9 @@ def get_totals_by_category(transactions: list[Transaction]) -> dict[str, float]:
     return categories
 
 
-def filter_by_category(transactions: list[Transaction], category: str) -> list[Transaction]:
+def filter_by_category(
+    transactions: list[Transaction], category: str
+) -> list[Transaction]:
     """Return only the transactions matching the given category (case-insensitive)."""
     return [t for t in transactions if t.category.lower() == category.lower()]
 
