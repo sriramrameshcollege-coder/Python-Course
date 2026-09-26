@@ -32,16 +32,17 @@ def build_running_balance_chart(df: pd.DataFrame) -> None:
     plt.tight_layout()
 
 
-def show_and_maybe_save(filename: str) -> None:
-    """Display the current figure, then optionally save it based on user input."""
-    plt.show()
+def save_chart(filename: str) -> None:
+    """Save the current figure to output/<filename>."""
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    plt.savefig(OUTPUT_DIR / filename)
+    print(f"Saved to output/{filename}")
 
-    save = input(f"Save this chart to output/{filename}? (y/n): ").strip().lower()
-    if save == "y":
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        plt.savefig(OUTPUT_DIR / filename)
-        print(f"Saved to output/{filename}")
 
+def maybe_show(view_interactively: bool) -> None:
+    """Optionally display the current figure interactively."""
+    if view_interactively:
+        plt.show()
     plt.close()
 
 def build_income_vs_expense_chart(df: pd.DataFrame) -> None:

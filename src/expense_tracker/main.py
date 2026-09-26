@@ -3,7 +3,8 @@ from expense_tracker.viz import (
     build_category_chart,
     build_income_vs_expense_chart,
     build_running_balance_chart,
-    show_and_maybe_save,
+    save_chart,
+    maybe_show,
 )
 from expense_tracker.analysis import get_biggest_expense_category, get_running_balance, get_stats, get_category_summary, get_monthly_summary, load_as_dataframe
 from expense_tracker.storage import (
@@ -110,17 +111,20 @@ def print_summary(transactions: list[Transaction]) -> None:
         print("\nTransaction type counts:")
         print(get_monthly_summary(df).to_string())
 
-    if not df.empty:
-        show_charts = input("\nWant to view charts? (y/n): ").strip().lower()
-        if show_charts == "y":
+        if not df.empty:
+            view_charts = input("\nWant to view charts on screen as well? (y/n): ").strip().lower() == "y"
+
             build_category_chart(df)
-            show_and_maybe_save("category_totals.png")
+            save_chart("category_totals.png")
+            maybe_show(view_charts)
 
             build_running_balance_chart(df)
-            show_and_maybe_save("running_balance.png")
+            save_chart("running_balance.png")
+            maybe_show(view_charts)
 
             build_income_vs_expense_chart(df)
-            show_and_maybe_save("income_vs_expense.png")
+            save_chart("income_vs_expense.png")
+            maybe_show(view_charts)
 
 if __name__ == "__main__":
     main()

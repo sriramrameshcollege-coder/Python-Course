@@ -2,7 +2,6 @@
 .venv/
 
 # Generated data and output
-output/
 data/transactions.csv
 
 # Python cache
